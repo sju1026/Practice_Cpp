@@ -177,6 +177,131 @@ public:
 };
 #pragma endregion
 
+#pragma region ProtectedHeri
+class Base {
+private:
+    int num1;
+protected:
+    int num2;
+public:
+    int num3;
+    Base():num1(1), num2(2), num3(3){}
+};
+
+class Derived : public Base {};
+#pragma endregion
+
+#pragma region ISAInheritance
+class Computer {
+private:
+    char owner[50];
+public:
+    Computer(const char* name) {
+        strcpy(owner, name);
+    }
+    void Calculate() {
+        cout << "요청 내용을 계산합니다." << endl;
+    }
+};
+
+class NotebookComp : public Computer {
+private:
+    int Battery;
+public:
+    NotebookComp(const char * name, int initChag): Computer(name), Battery(initChag){}
+    void Charging() { Battery += 5; }
+    void UseBattery() { Battery -= 1; }
+    void MovingCal() {
+        if (GetBatteryInfo()<1)
+        {
+            cout << "충전이 필요하빈다." << endl;
+            return;
+        }
+        cout << "이동하면서 ";
+        Calculate();
+        UseBattery();
+    }
+    int GetBatteryInfo() { return Battery; }
+};
+
+class TabletNotebook : public NotebookComp {
+private:
+    char regstPenModel[50];
+public:
+    TabletNotebook(const char* name, int initChag, const char* pen) :NotebookComp(name, initChag) {
+        strcpy(regstPenModel, pen);
+    }
+    void Write(const char* penInfo) {
+        if (GetBatteryInfo()<1)
+        {
+            cout << "충전이 필요합니다." << endl;
+            return;
+        }
+        if (strcmp(regstPenModel, penInfo)!=0)
+        {
+            cout << "등록된 펜이 아닙니다.";
+            return;
+        }
+        cout << "필기 내용을 처리합니다." << endl;
+        UseBattery();
+    }
+};
+#pragma endregion
+
+#pragma region HASInheritance
+class Gun {
+private:
+    int bullet;
+public:
+    Gun(int bnum) : bullet(bnum) {}
+    void Shot() {
+        cout << "BBANG!" << endl;
+        bullet--;
+    }
+};
+
+//class Police : public Gun {
+//private:
+//    int handCuffs;
+//public:
+//    Police(int bnum, int bcuff) : Gun(bnum), handCuffs(bcuff){}
+//    void PutHandcuff() {
+//        cout << "SNAP!" << endl;
+//        handCuffs--;
+//    }
+//};
+
+class Police {
+private:
+    int handcuffs;
+    Gun* pistol;
+public:
+    Police(int bnum, int bcuff) : handcuffs(bcuff) {
+        if (bnum > 0)
+            pistol = new Gun(bnum);
+        else
+            pistol = NULL;
+    }
+    void PutHandcuff() {
+        cout << "SNAP!" << endl;
+        handcuffs--;
+    }
+    void Shot() {
+        if (pistol == NULL)
+            cout << "Hut BBANG!" << endl;
+        else
+            pistol->Shot();
+    }
+    ~Police() {
+        if (pistol != NULL)
+            delete pistol;
+    }
+};
+#pragma endregion
+
+
+
+
 int main(void)
 {
     // EmployeeManager
@@ -216,9 +341,30 @@ int main(void)
     SoDerived1 drv2(27);*/
 
     // DestModel
-    UnivStudent1 st1("Kim", "Mathematics");
+    /*UnivStudent1 st1("Kim", "Mathematics");
     st1.WhoArYou();
-    UnivStudent1 st2("Hong", "Physics");
+    UnivStudent1 st2("Hong", "Physics");*/
+
+    // ProtectedHeri
+    /*Derived drv;
+    cout << drv.num3 << endl;*/
+
+    /*NotebookComp nc("이수종", 5);
+    TabletNotebook tn("정수영", 5, "ISE-241-242");
+    nc.MovingCal();
+    tn.Write("ISE-241-242");*/
+
+    // HASInheritance
+    /*Police pman(5, 3);
+    pman.Shot();
+    pman.PutHandcuff();*/
+    Police pman1(5, 3);
+    pman1.Shot();
+    pman1.PutHandcuff();
+
+    Police pman2(0, 3);
+    pman2.Shot();
+    pman2.PutHandcuff();
 
     return 0;
 }
