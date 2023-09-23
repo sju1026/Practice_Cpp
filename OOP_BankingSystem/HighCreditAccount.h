@@ -8,6 +8,7 @@
 
 #include "NormalAccount.h"
 #include "String.h"
+#include "AccountException.h"
 
 class HighCreditAccount : public NormalAccount {
 private:
@@ -17,6 +18,9 @@ public:
 	HighCreditAccount(int ID, int money, String name, int rate, int special) :
 		NormalAccount(ID, money, name, rate), specialRate(special) { }
 	virtual void Deposit(int money) {
+		if (money < 0)
+			throw MinusException(money);
+
 		NormalAccount::Deposit(money);						 // 원금 추가
 		Account::Deposit(money * (specialRate / 100.0));	 // 이자 추가
 	}
