@@ -13,8 +13,12 @@ const int NAME_LEN = 20;
 
 /*
 * Banking System Ver 0.2 *
-* 작성자 : 서재웅 *
 * 내용 : Account 클래스 정의, 객체 포인터 배열 적용
+*/
+
+/*
+* Banking System Ver 0.3 *
+* 내용 : Account 클래스에 추가된 복사 생성자
 */
 #pragma endregion
 
@@ -39,6 +43,11 @@ public:
 	Account(int ID, int money, char* name) :accID(ID), balance(money) {
 		cusName = new char[strlen(name) + 1];
 		strcpy(cusName, name);
+	}
+
+	Account(const Account& ref) :accID(ref.accID), balance(ref.balance) {
+		cusName = new char[strlen(ref.cusName) + 1];
+		strcpy(cusName, ref.cusName);
 	}
 
 	int GetAccID() { return accID; }
