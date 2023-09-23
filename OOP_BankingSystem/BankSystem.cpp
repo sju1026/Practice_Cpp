@@ -20,6 +20,11 @@ const int NAME_LEN = 20;
 * Banking System Ver 0.3 *
 * 내용 : Account 클래스에 추가된 복사 생성자
 */
+
+/*
+* Banking System Ver 0.5 *
+* 내용 : AccountHandler라는 이름의 컨트롤 클래스 정의
+*/
 #pragma endregion
 
 #pragma region Function Identity
@@ -33,6 +38,11 @@ void ShowAllAccInfo(void);	// 잔액조회
 
 enum { MAKE = 1, DEPOSIT, WITHDRAW, INQUIRE, EXIT };
 
+/*
+* 클래스 이름 : Account
+* 클래스 유형 : Entity 클래스
+*/
+
 class Account {
 private:
 	int accID;	   // 계좌번호
@@ -40,80 +50,72 @@ private:
 	char* cusName; // 고객이름
 
 public:
-	Account(int ID, int money, char* name) :accID(ID), balance(money) {
-		cusName = new char[strlen(name) + 1];
-		strcpy(cusName, name);
-	}
+	Account(int ID, int money, char* name);
+	Account(const Account& ref);
 
-	Account(const Account& ref) :accID(ref.accID), balance(ref.balance) {
-		cusName = new char[strlen(ref.cusName) + 1];
-		strcpy(cusName, ref.cusName);
-	}
-
-	int GetAccID() { return accID; }
-
-	void Deposit(int money) {
-		balance += money;
-	}
-
-	int Withdraw(int money) { // 출금액 반환, 부족 시 0 반환
-		if (balance < money)
-			return 0;
-
-		balance -= money;
-		return money;
-	}
-
-	void ShowAccInfo() {
-		cout << "계좌ID: " << accID << endl;
-		cout << "이 름: " << cusName << endl;
-		cout << "잔 액: " << balance << endl;
-	}
-
-	~Account() {
-		delete[]cusName;
-	}
+	int GetAccID() const;
+	void Deposit(int money);
+	int Withdraw(int money);
+	void ShowAccInfo() const;
+	~Account();
 };
 
-Account* accArr[100]; // Account 저장을 위한 배열
-int accNum = 0; // 저장된 Account 수
-
-int main(){
-	int choice;
-
-	while (1)
-	{
-		ShowMenu();
-		cout << "선택 : ";
-		cin >> choice;
-		cout << endl;
-
-		switch (choice)
-		{
-		case MAKE:
-			MakeAccount();
-			break;
-		case DEPOSIT:
-			DepositMoney();
-			break;
-		case WITHDRAW:
-			WithDrawMoney();
-			break;
-		case INQUIRE:
-			ShowAllAccInfo();
-			break;
-		case EXIT:
-			for (int i = 0; i < accNum; i++)
-				delete accArr[i];
-			return 0;
-		default:
-			cout << "Illegal selection.." << endl;
-		}
-	}
-	return 0;
+Account::Account(int ID, int money, char* name) :accID(ID), balance(money)
+{
+	cusName = new char[strlen(name) + 1];
+	strcpy(cusName, name);
 }
 
-void ShowMenu(void)
+Account::Account(const Account& ref) :accID(ref.accID), balance(ref.balance) 
+{
+	cusName = new char[strlen(ref.cusName) + 1];
+	strcpy(cusName, ref.cusName);
+}
+
+int Account::GetAccID() const { return accID; }
+
+void Account::Deposit(int money) {
+	balance += money;
+}
+
+int Account::Withdraw(int money) { // 출금액 반환, 부족 시 0 반환
+	if (balance < money)
+		return 0;
+
+	balance -= money;
+	return money;
+}
+
+void Account::ShowAccInfo() const{
+	cout << "계좌ID: " << accID << endl;
+	cout << "이 름: " << cusName << endl;
+	cout << "잔 액: " << balance << endl;
+}
+
+Account::~Account() {
+	delete[]cusName;
+}
+
+/*
+* 클래스 이름 : AccountHandler
+* 클래스 유형 : 컨트롤(Control) 클래스
+*/
+
+class AccountHandler {
+private:
+	Account* accArr[100]; // Account 저장을 위한 배열
+	int accNum = 0; // 저장된 Account 수
+public:
+	AccountHandler();
+	void ShowMenu(void) const;		// 메뉴 출력
+	void MakeAccount(void);			// 계좌개설을 위한 함수
+	void DepositMoney(void);		// 입금
+	void WithDrawMoney(void);		// 출금
+	void ShowAllAccInfo(void) const;// 잔액조회
+	~AccountHandler();
+};
+
+void AccountHandler::ShowMenu (void) const
 {
 	cout << "-----Menu-----" << endl;
 	cout << "1. 계좌개설" << endl;
@@ -123,7 +125,7 @@ void ShowMenu(void)
 	cout << "5. 프로그램 종료" << endl;
 }
 
-void MakeAccount(void)
+void AccountHandler::MakeAccount(void)
 {
 	int id;
 	char name[NAME_LEN];
@@ -138,7 +140,7 @@ void MakeAccount(void)
 	accArr[accNum++] = new Account(id, balance, name);
 }
 
-void DepositMoney(void)
+void AccountHandler::DepositMoney(void)
 {
 	int money;
 	int id;
@@ -157,7 +159,7 @@ void DepositMoney(void)
 	cout << "유효하지 않은 ID 입니다" << endl << endl;
 }
 
-void WithDrawMoney(void)
+void AccountHandler::WithDrawMoney(void)
 {
 	int money;
 	int id;
@@ -180,11 +182,56 @@ void WithDrawMoney(void)
 	cout << "유효하지 않은 ID 입니다" << endl << endl;
 }
 
-void ShowAllAccInfo(void)
+AccountHandler::AccountHandler() : accNum(0) { }
+
+void AccountHandler::ShowAllAccInfo(void) const
 {
 	for (int i = 0; i < accNum; i++)
 	{
 		accArr[i]->ShowAccInfo();
 		cout << endl;
 	}
+}
+
+AccountHandler::~AccountHandler() {
+	for (int i = 0; i < accNum; i++) {
+		delete accArr[i];
+	}
+}
+
+/*
+*  컨트롤 클래스 AccountHandler 중심으로 변경된 main 함수
+*/
+int main(){
+	AccountHandler manager;
+	int choice;
+
+	while (1)
+	{
+		manager.ShowMenu();
+		cout << "선택 : ";
+		cin >> choice;
+		cout << endl;
+
+		switch (choice)
+		{
+		case MAKE:
+			manager.MakeAccount();
+			break;
+		case DEPOSIT:
+			manager.DepositMoney();
+			break;
+		case WITHDRAW:
+			manager.WithDrawMoney();
+			break;
+		case INQUIRE:
+			manager.ShowAllAccInfo();
+			break;
+		case EXIT:
+			return 0;
+		default:
+			cout << "Illegal selection.." << endl;
+		}
+	}
+	return 0;
 }
