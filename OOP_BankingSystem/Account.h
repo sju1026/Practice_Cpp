@@ -1,6 +1,6 @@
 /*
 * 파일이름 : Account.h
-* 업데이트 정보 : 0.7
+* 업데이트 정보 : 0.8
 */
 
 #ifndef __ACCOUNT_H__
@@ -15,6 +15,7 @@ private:
 public:
 	Account(int ID, int money, char* name);
 	Account(const Account& ref);
+	Account& operator = (const Account& ref);
 
 	int GetAccID() const;
 	virtual void Deposit(int money);

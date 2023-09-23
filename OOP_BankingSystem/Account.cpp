@@ -1,6 +1,6 @@
 /*
 * 파일이름 : Account.cpp
-* 업데이트 정보 : 0.7
+* 업데이트 정보 : 0.8
 */
 
 #include "BankingCommonDecl.h"
@@ -18,6 +18,17 @@ Account::Account(const Account& ref)
 {
 	cusName = new char[strlen(ref.cusName) + 1];
 	strcpy(cusName, ref.cusName);
+}
+
+Account& Account::operator=(const Account& ref)
+{
+	accID = ref.accID;
+	balance = ref.balance;
+
+	delete[] cusName;
+	cusName = new char[strlen(ref.cusName) + 1];
+	strcpy(cusName, ref.cusName);
+	return *this;
 }
 
 int Account::GetAccID() const { return accID; }

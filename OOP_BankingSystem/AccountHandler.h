@@ -1,16 +1,17 @@
 /*
 * 클래스 이름 : AccountHandler.h
-* 업데이트 정보 : 0.7
+* 업데이트 정보 : 0.8
 */
 
 #ifndef __ACOUNT_HANDLER_H__
 #define __ACOUNT_HANDLER_H__
 
 #include "Account.h"
+#include "AccountArray.h"
 
 class AccountHandler {
 private:
-	Account* accArr[100]; // Account 저장을 위한 배열
+	BoundCheckAccuntPtrArray accArr;
 	int accNum = 0; // 저장된 Account 수
 public:
 	AccountHandler();
