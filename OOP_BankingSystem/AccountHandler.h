@@ -7,12 +7,12 @@
 #define __ACOUNT_HANDLER_H__
 
 #include "Account.h"
-#include "AccountArray.h"
+#include "BoundCheckArray.h"
 
 class AccountHandler {
 private:
-	BoundCheckAccuntPtrArray accArr;
-	int accNum = 0; // 저장된 Account 수
+	BoundCheckArray<Account*> accArr;
+	int accNum; // 저장된 Account 수
 public:
 	AccountHandler();
 	void ShowMenu(void) const;		// 메뉴 출력
